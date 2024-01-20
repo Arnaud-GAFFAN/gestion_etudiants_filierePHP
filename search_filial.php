@@ -1,9 +1,5 @@
 <?php
-try{
     $bdd = new PDO('mysql:host=localhost;dbname=gestion_etudiant_filiere;', 'root', '');
-}catch(Exception $e){
-    die('Erreur: ' . ' '. $e);
-}
 ?>
 
 <!doctype html>
@@ -19,26 +15,48 @@ try{
 </head>
 <body>
 
-<form action="search_filial.php" method="get">
-    <div>
-        <label for="filiere" class="form-label">Filière</label>
-        <select name="filiere" id="filiere" class="form-select">
-            <?php
-            $request = $bdd->query('select * from filiere');
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Matricule</th>
+        <th scope="col">Nom</th>
+        <th scope="col">Prénom(s)</th>
+        <th scope="col">Date de naissance</th>
+        <th scope="col">Numéro de téléphone</th>
+        <th scope="col">email</th>
+        <th scope="col">Sexe</th>
+        <th scope="col">Filière</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    $request = $bdd->prepare("select * from etudiant where id_filiere= :filiere ");
+    $request->execute(array('filiere' => $_POST['filiere']));
 
-            while ($donnes = $request->fetch()){
-                ?>
-                <option value=<?php echo $donnes['id_filiere'] ?> ><?php echo $donnes['nom_filiere'] ?> </option>
-                <?php
-            }
-            $request->closeCursor();
+    while ($donnes = $request->fetch())
+    {
+    ?>
+    <tr>
+        <th scope="row"> <?php echo $donnes['matricule'] ?> </th>
+        <td> <?php echo $donnes['nom'] ?> </td>
+        <td> <?php echo $donnes['prenom'] ?></td>
+        <td> <?php echo $donnes['date_naissance'] ?></td>
+        <td> <?php echo $donnes['numero_telephone'] ?></td>
+        <td> <?php echo $donnes['email'] ?></td>
+        <td> <?php echo $donnes['sexe'] ?></td>
+        <td> <?php echo $donnes['id_filiere'] ?></td>
+    </tr>
+        <?php
+    }
+    $request->closeCursor()
+    ?>
+
+    </tbody>
+</table>
+
+<a href="index.php">Retour  l'acceuil pour sélectionner une filiere</a>
 
 
-            ?>
-        </select>
-        <input type="submit" value="Afficher">
-</form>
 <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
-<script src="js/script.js"></script>
 </body>
 </html>

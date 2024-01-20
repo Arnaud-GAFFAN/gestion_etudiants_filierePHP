@@ -1,3 +1,12 @@
+
+
+<?php
+try {
+    $bdd = new PDO('mysql:host=localhost;dbname=gestion_etudiant_filiere;', 'root', '');
+}catch(Exception $e){
+    die('Erreur: ' . ' '. $e);
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -17,13 +26,43 @@
             <i class="ri-user-add-fill"></i>
         </div>
         <div>
-            <a href="./search_filial.php">Voir la liste des étudiants par filière</a>
-            <i class="ri-arrow-right-line"></i>
+            <div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Afficher la liste</button>
+                <i class="ri-arrow-right-line"></i>
+            </div>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="search_filial.php" method="post">
+                                <label for="filiere" class="form-label">Filière</label>
+                                <select name="filiere" id="filiere" class="form-select">
+                                    <?php
+                                    $request = $bdd->query('select * from filiere');
+
+                                    while ($donnes = $request->fetch()){
+                                        ?>
+                                        <option value=<?php echo $donnes['id_filiere'] ?> ><?php echo $donnes['nom_filiere'] ?> </option>
+                                        <?php
+                                    }
+                                    $request->closeCursor();
+                                    ?>
+                                </select>
+                                <button type="submit" class="btn btn-primary">Valider</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+        </div>
 
 
 <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="js/script.js"></script>
 </body>
 </html>
